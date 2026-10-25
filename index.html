@@ -1,73 +1,33 @@
-<!DOCTYPE html>
-<html lang="en" class="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StreamVerse - Ultimate Dual Audio Streaming</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- HLS.js for .m3u8 Adaptive Bitrate & Multi-Audio Streaming -->
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            red: '#E50914',
-                            darkRed: '#B81D24',
-                            black: '#141414',
-                            cardBg: '#181818',
-                            hoverBg: '#282828'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #141414; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #E50914; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .hero-gradient { background: linear-gradient(0deg, #141414 0%, rgba(20,20,20,0.8) 50%, rgba(20,20,20,0.2) 100%); }
-    </style>
-</head>
+<!-- ... existing code ... -->
 <body class="bg-brand-black text-white font-sans antialiased selection:bg-brand-red selection:text-white min-h-screen flex flex-col justify-between">
 
     <!-- NAVBAR -->
-    <header id="navbar" class="fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-gradient-to-b from-black/90 to-transparent px-4 sm:px-8 py-4 flex items-center justify-between">
+    <header id="navbar" class="fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-gradient-to-b from-black/90 via-black/60 to-transparent px-4 sm:px-8 py-4 flex items-center justify-between backdrop-blur-sm">
         <div class="flex items-center space-x-8">
             <a href="#" class="flex items-center space-x-2 text-2xl sm:text-3xl font-extrabold text-brand-red tracking-wider uppercase">
                 <i class="fa-solid font-black fa-play text-brand-red"></i>
-                <!-- Apne App Ka Naam Yahan Badal Sakte Hain -->
                 <span>My<span class="text-white">Flix</span></span>
             </a>
             
             <nav class="hidden md:flex space-x-6 text-sm font-medium text-gray-300">
-                <button onclick="filterCategory('all')" class="hover:text-white transition font-bold text-white">Home</button>
-                <button onclick="filterCategory('anime')" class="hover:text-white transition">Anime</button>
-                <button onclick="filterCategory('hollywood')" class="hover:text-white transition">Hollywood</button>
-                <button onclick="filterCategory('bollywood')" class="hover:text-white transition">Bollywood</button>
-                <button onclick="filterCategory('kdrama')" class="hover:text-white transition">K-Drama</button>
+                <button onclick="filterCategory('all')" class="cat-nav-btn hover:text-white transition font-bold text-white">Home</button>
+                <button onclick="filterCategory('anime')" class="cat-nav-btn hover:text-white transition">Anime</button>
+                <button onclick="filterCategory('hollywood')" class="cat-nav-btn hover:text-white transition">Hollywood</button>
+                <button onclick="filterCategory('bollywood')" class="cat-nav-btn hover:text-white transition">Bollywood</button>
+                <button onclick="filterCategory('kdrama')" class="cat-nav-btn hover:text-white transition">K-Drama</button>
             </nav>
         </div>
 
         <div class="flex items-center space-x-4">
             <!-- Search Bar -->
             <div class="relative">
-                <input type="text" id="searchInput" onkeyup="handleSearch()" placeholder="Search titles, audio..." class="bg-black/60 text-xs sm:text-sm border border-gray-700 rounded-full px-4 py-2 pl-9 focus:outline-none focus:border-brand-red w-36 sm:w-60 transition-all">
+                <input type="text" id="searchInput" onkeyup="handleSearch()" placeholder="Search titles, audio..." class="bg-black/80 text-xs sm:text-sm border border-gray-700 rounded-full px-4 py-2 pl-9 focus:outline-none focus:border-brand-red w-36 sm:w-60 transition-all">
                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400 text-xs sm:text-sm"></i>
             </div>
 
-            <!-- Admin Only Add Content Button (Hidden for Normal Viewers) -->
+            <!-- Admin Only Add Content Button -->
             <div id="adminControls" class="hidden">
-                <button onclick="openModal('addMediaModal')" class="bg-brand-red hover:bg-brand-darkRed text-white text-xs sm:text-sm px-3 py-2 rounded-md font-semibold flex items-center space-x-1.5 transition">
+                <button onclick="openModal('addMediaModal')" class="bg-brand-red hover:bg-brand-darkRed text-white text-xs sm:text-sm px-3 py-2 rounded-md font-semibold flex items-center space-x-1.5 transition shadow-md">
                     <i class="fa-solid fa-plus"></i>
                     <span class="hidden sm:inline">Add Media</span>
                 </button>
@@ -79,18 +39,18 @@
     <main class="flex-grow pt-16">
 
         <!-- HERO BANNER SECTION -->
-        <section id="heroSection" class="relative w-full h-[65vh] sm:h-[75vh] bg-cover bg-center flex items-end pb-12 px-4 sm:px-12 transition-all duration-500" style="background-image: url('https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1600&auto=format&fit=crop');">
+        <section id="heroSection" class="relative w-full h-[60vh] sm:h-[75vh] min-h-[400px] bg-cover bg-center flex items-end pb-12 px-4 sm:px-12 transition-all duration-500 overflow-hidden" style="background-image: url('https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1600&auto=format&fit=crop');">
             <div class="absolute inset-0 hero-gradient"></div>
             
             <div class="relative z-10 max-w-2xl space-y-4">
-                <div class="flex items-center space-x-2">
-                    <span class="bg-brand-red/90 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest inline-block shadow-md" id="heroCategory">FEATURED ANIME</span>
-                    <span class="bg-blue-600/90 text-white text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="bg-brand-red/90 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest shadow-md" id="heroCategory">FEATURED ANIME</span>
+                    <span class="bg-blue-600/90 text-white text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-md">
                         <i class="fa-solid fa-language"></i> Dual Audio (Hindi + Eng)
                     </span>
                 </div>
                 <h1 class="text-3xl sm:text-5xl md:text-6xl font-black text-white drop-shadow-md leading-tight" id="heroTitle">Solo Leveling</h1>
-                <p class="text-sm sm:text-base text-gray-300 line-clamp-3 drop-shadow" id="heroDesc">
+                <p class="text-sm sm:text-base text-gray-300 line-clamp-3 drop-shadow max-w-xl" id="heroDesc">
                     In a world where hunters must battle deadly monsters to protect humanity, Sung Jinwoo, the weakest hunter, acquires a mysterious system that allows him to level up endlessly.
                 </p>
                 <div class="flex items-center space-x-3 pt-2">
@@ -98,7 +58,7 @@
                         <i class="fa-solid fa-play text-lg"></i>
                         <span>Watch Now</span>
                     </button>
-                    <button onclick="scrollToContent()" class="bg-gray-600/70 hover:bg-gray-600 text-white px-5 py-3 rounded-md font-semibold text-sm sm:text-base flex items-center space-x-2 transition backdrop-blur-sm">
+                    <button onclick="scrollToContent()" class="bg-gray-700/80 hover:bg-gray-600 text-white px-5 py-3 rounded-md font-semibold text-sm sm:text-base flex items-center space-x-2 transition backdrop-blur-sm border border-gray-600">
                         <i class="fa-solid fa-layer-group"></i>
                         <span>Explore Library</span>
                     </button>
@@ -107,25 +67,25 @@
         </section>
 
         <!-- CATEGORY QUICK FILTER BAR -->
-        <div class="px-4 sm:px-12 py-6 flex space-x-2 sm:space-x-4 overflow-x-auto no-scrollbar border-b border-gray-800">
-            <button onclick="filterCategory('all')" class="cat-btn active-cat bg-brand-red text-white text-xs sm:text-sm font-semibold px-4 py-2 rounded-full whitespace-nowrap transition">All Categories</button>
-            <button onclick="filterCategory('anime')" class="cat-btn bg-brand-cardBg hover:bg-brand-hoverBg text-gray-300 text-xs sm:text-sm font-semibold px-4 py-2 rounded-full whitespace-nowrap transition">🍥 Anime</button>
-            <button onclick="filterCategory('hollywood')" class="cat-btn bg-brand-cardBg hover:bg-brand-hoverBg text-gray-300 text-xs sm:text-sm font-semibold px-4 py-2 rounded-full whitespace-nowrap transition">🎬 Hollywood</button>
-            <button onclick="filterCategory('bollywood')" class="cat-btn bg-brand-cardBg hover:bg-brand-hoverBg text-gray-300 text-xs sm:text-sm font-semibold px-4 py-2 rounded-full whitespace-nowrap transition">🍿 Bollywood</button>
-            <button onclick="filterCategory('kdrama')" class="cat-btn bg-brand-cardBg hover:bg-brand-hoverBg text-gray-300 text-xs sm:text-sm font-semibold px-4 py-2 rounded-full whitespace-nowrap transition">☕ Korean Dramas</button>
+        <div class="px-4 sm:px-12 py-6 flex space-x-2 sm:space-x-4 overflow-x-auto no-scrollbar border-b border-gray-800/80 bg-brand-black/50 sticky top-16 z-30 backdrop-blur-md">
+            <button onclick="filterCategory('all')" id="btn-all" class="cat-filter-btn active-cat bg-brand-red text-white text-xs sm:text-sm font-semibold px-4 py-2 rounded-full whitespace-nowrap transition shadow-md">All Categories</button>
+            <button onclick="filterCategory('anime')" id="btn-anime" class="cat-filter-btn bg-brand-cardBg hover:bg-brand-hoverBg text-gray-300 text-xs sm:text-sm font-semibold px-4 py-2 rounded-full whitespace-nowrap transition border border-gray-800">🍥 Anime</button>
+            <button onclick="filterCategory('hollywood')" id="btn-hollywood" class="cat-filter-btn bg-brand-cardBg hover:bg-brand-hoverBg text-gray-300 text-xs sm:text-sm font-semibold px-4 py-2 rounded-full whitespace-nowrap transition border border-gray-800">🎬 Hollywood</button>
+            <button onclick="filterCategory('bollywood')" id="btn-bollywood" class="cat-filter-btn bg-brand-cardBg hover:bg-brand-hoverBg text-gray-300 text-xs sm:text-sm font-semibold px-4 py-2 rounded-full whitespace-nowrap transition border border-gray-800">🍿 Bollywood</button>
+            <button onclick="filterCategory('kdrama')" id="btn-kdrama" class="cat-filter-btn bg-brand-cardBg hover:bg-brand-hoverBg text-gray-300 text-xs sm:text-sm font-semibold px-4 py-2 rounded-full whitespace-nowrap transition border border-gray-800">☕ Korean Dramas</button>
         </div>
 
         <!-- SEARCH RESULTS CONTAINER -->
-        <section id="searchResultsSection" class="hidden px-4 sm:px-12 py-8">
-            <h2 class="text-xl sm:text-2xl font-bold mb-4 text-gray-200">Search Results</h2>
+        <section id="searchResultsSection" class="hidden px-4 sm:px-12 py-8 min-h-[40vh]">
+            <h2 class="text-xl sm:text-2xl font-bold mb-6 text-gray-200 border-b border-gray-800 pb-3">Search Results</h2>
             <div id="searchResultsGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-6"></div>
         </section>
 
         <!-- CATEGORIES CONTENT ROWS -->
-        <section id="mainContentRows" class="space-y-10 py-6 px-4 sm:px-12">
+        <section id="mainContentRows" class="space-y-12 py-8 px-4 sm:px-12 min-h-[50vh]">
             
             <div id="animeRow" class="media-row-container">
-                <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center justify-between mb-4 border-b border-gray-800/60 pb-2">
                     <h2 class="text-lg sm:text-xl font-bold text-white flex items-center space-x-2">
                         <span class="w-1.5 h-5 bg-brand-red inline-block rounded-full"></span>
                         <span>Anime Series & Movies</span>
@@ -135,7 +95,7 @@
             </div>
 
             <div id="hollywoodRow" class="media-row-container">
-                <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center justify-between mb-4 border-b border-gray-800/60 pb-2">
                     <h2 class="text-lg sm:text-xl font-bold text-white flex items-center space-x-2">
                         <span class="w-1.5 h-5 bg-blue-500 inline-block rounded-full"></span>
                         <span>Hollywood Blockbusters</span>
@@ -145,7 +105,7 @@
             </div>
 
             <div id="bollywoodRow" class="media-row-container">
-                <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center justify-between mb-4 border-b border-gray-800/60 pb-2">
                     <h2 class="text-lg sm:text-xl font-bold text-white flex items-center space-x-2">
                         <span class="w-1.5 h-5 bg-yellow-500 inline-block rounded-full"></span>
                         <span>Bollywood Hits</span>
@@ -155,7 +115,7 @@
             </div>
 
             <div id="kdramaRow" class="media-row-container">
-                <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center justify-between mb-4 border-b border-gray-800/60 pb-2">
                     <h2 class="text-lg sm:text-xl font-bold text-white flex items-center space-x-2">
                         <span class="w-1.5 h-5 bg-pink-500 inline-block rounded-full"></span>
                         <span>Korean Dramas</span>
@@ -167,405 +127,26 @@
         </section>
     </main>
 
-    <footer class="bg-black/80 border-t border-gray-800 py-8 px-4 sm:px-12 text-center text-xs text-gray-500 space-y-2">
-        <p>© 2026 StreamVerse Platform. Free high-performance dual-audio streaming solution.</p>
-        <p class="text-gray-600">Supports Hindi & English Audio Switching with HLS Adaptive Bitrate.</p>
-        <div class="pt-2">
-            <button id="adminLoginBtn" onclick="promptAdminLogin()" class="text-gray-600 hover:text-brand-red transition text-[11px] underline">
-                <i class="fa-solid fa-lock text-[10px]"></i> Admin Portal
-            </button>
-        </div>
-    </footer>
-
-    <!-- ADMIN LOGIN MODAL -->
-    <div id="adminAuthModal" class="fixed inset-0 z-50 hidden bg-black/80 flex justify-center items-center p-4 backdrop-blur-sm">
-        <div class="w-full max-w-sm bg-brand-cardBg rounded-xl p-6 border border-gray-800 shadow-2xl relative">
-            <div class="flex justify-between items-center mb-4 border-b border-gray-800 pb-3">
-                <h3 class="text-base font-bold text-white flex items-center space-x-2">
-                    <i class="fa-solid fa-user-shield text-brand-red"></i>
-                    <span>Admin Security Access</span>
-                </h3>
-                <button onclick="closeModal('adminAuthModal')" class="text-gray-400 hover:text-white">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
-            <form onsubmit="verifyAdminPin(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs text-gray-400 mb-1 font-semibold">Enter Admin Secret Password</label>
-                    <input type="password" id="adminPinInput" required placeholder="Enter Secret Password" class="w-full bg-black/60 border border-gray-700 rounded-md p-2.5 text-center tracking-widest text-lg text-white focus:outline-none focus:border-brand-red">
-                </div>
-                <p id="pinErrorMsg" class="text-red-500 text-xs text-center hidden">Incorrect Password! Access Denied.</p>
-                <div class="flex justify-end space-x-2">
-                    <button type="button" onclick="closeModal('adminAuthModal')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-xs font-semibold rounded-md">Cancel</button>
-                    <button type="submit" class="px-4 py-2 bg-brand-red hover:bg-brand-darkRed text-xs font-semibold rounded-md">Login as Admin</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- DUAL-AUDIO VIDEO PLAYER MODAL -->
-    <div id="videoModal" class="fixed inset-0 z-50 hidden bg-black/95 flex flex-col justify-center items-center p-2 sm:p-6 backdrop-blur-md">
-        <div class="w-full max-w-5xl bg-brand-cardBg rounded-lg overflow-hidden shadow-2xl relative border border-gray-800">
-            
-            <!-- Modal Header with Language Selector -->
-            <div class="flex flex-wrap justify-between items-center px-4 py-3 bg-black/80 border-b border-gray-800 gap-2">
-                <div class="flex items-center space-x-3">
-                    <span id="playerBadge" class="bg-brand-red text-white text-xs px-2 py-0.5 rounded font-bold">ANIME</span>
-                    <h3 id="playerTitle" class="text-base sm:text-lg font-bold text-white truncate max-w-xs sm:max-w-md">Playing Title</h3>
-                </div>
-
-                <!-- AUDIO LANGUAGE SWITCHER BUTTONS -->
-                <div class="flex items-center space-x-2 bg-gray-900 p-1 rounded-lg border border-gray-700">
-                    <span class="text-[11px] text-gray-400 font-semibold px-2 flex items-center gap-1">
-                        <i class="fa-solid fa-headphone text-brand-red"></i> Audio:
-                    </span>
-                    <button id="langHindiBtn" onclick="switchAudioLanguage('hindi')" class="px-3 py-1 text-xs font-bold rounded-md bg-brand-red text-white transition">
-                        🇮🇳 Hindi
-                    </button>
-                    <button id="langEnglishBtn" onclick="switchAudioLanguage('english')" class="px-3 py-1 text-xs font-bold rounded-md bg-gray-800 text-gray-300 hover:bg-gray-700 transition">
-                        🇬🇧 English
-                    </button>
-                </div>
-
-                <button onclick="closeVideoPlayer()" class="text-gray-400 hover:text-white text-xl sm:text-2xl transition px-2">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
-            <!-- Video Player Element -->
-            <div class="relative w-full aspect-video bg-black flex items-center justify-center">
-                <video id="mainVideoPlayer" controls class="w-full h-full object-contain" poster=""></video>
-            </div>
-
-            <!-- Video Info Footer -->
-            <div class="p-4 bg-brand-cardBg flex items-center justify-between">
-                <p id="playerDesc" class="text-xs sm:text-sm text-gray-300 line-clamp-2">Movie description...</p>
-                <div class="flex items-center space-x-2 text-xs text-gray-400 whitespace-nowrap ml-4">
-                    <span id="currentAudioLabel" class="bg-blue-900/60 text-blue-300 border border-blue-700 px-2 py-1 rounded font-semibold">Hindi Audio</span>
-                    <span class="bg-gray-800 px-2 py-1 rounded font-mono text-green-400">1080p Auto</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ADD MEDIA MODAL (With Dual-Audio Stream Support) -->
-    <div id="addMediaModal" class="fixed inset-0 z-50 hidden bg-black/80 flex justify-center items-center p-4 backdrop-blur-sm overflow-y-auto">
-        <div class="w-full max-w-lg bg-brand-cardBg rounded-xl p-6 border border-gray-800 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-4 border-b border-gray-800 pb-3 sticky top-0 bg-brand-cardBg z-10">
-                <h3 class="text-lg font-bold text-white flex items-center space-x-2">
-                    <i class="fa-solid fa-film text-brand-red"></i>
-                    <span>Add New Movie / Anime</span>
-                </h3>
-                <button onclick="closeModal('addMediaModal')" class="text-gray-400 hover:text-white">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
-
-            <form id="addMediaForm" onsubmit="handleAddMedia(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs text-gray-400 mb-1 font-semibold">Title Name</label>
-                    <input type="text" id="mediaTitle" required placeholder="e.g. Solo Leveling (Dual Audio)" class="w-full bg-black/60 border border-gray-700 rounded-md p-2.5 text-sm text-white focus:outline-none focus:border-brand-red">
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs text-gray-400 mb-1 font-semibold">Category</label>
-                        <select id="mediaCategory" class="w-full bg-black/60 border border-gray-700 rounded-md p-2.5 text-sm text-white focus:outline-none focus:border-brand-red">
-                            <option value="anime">Anime</option>
-                            <option value="hollywood">Hollywood</option>
-                            <option value="bollywood">Bollywood</option>
-                            <option value="kdrama">Korean Drama</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs text-gray-400 mb-1 font-semibold">Quality Badge</label>
-                        <input type="text" id="mediaQuality" placeholder="HD / 4K / 1080p" value="1080p HD Dual" class="w-full bg-black/60 border border-gray-700 rounded-md p-2.5 text-sm text-white focus:outline-none focus:border-brand-red">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs text-gray-400 mb-1 font-semibold">Poster Image URL</label>
-                    <input type="url" id="mediaPoster" required placeholder="https://image-link.com/poster.jpg" class="w-full bg-black/60 border border-gray-700 rounded-md p-2.5 text-sm text-white focus:outline-none focus:border-brand-red">
-                </div>
-
-                <!-- HINDI STREAM URL -->
-                <div>
-                    <label class="block text-xs text-gray-400 mb-1 font-semibold text-yellow-400">🇮🇳 Hindi Audio Stream URL (.m3u8 or .mp4)</label>
-                    <input type="url" id="mediaHindiUrl" required placeholder="https://your-server.com/hindi-stream.m3u8" class="w-full bg-black/60 border border-gray-700 rounded-md p-2.5 text-sm text-white focus:outline-none focus:border-brand-red">
-                </div>
-
-                <!-- ENGLISH STREAM URL -->
-                <div>
-                    <label class="block text-xs text-gray-400 mb-1 font-semibold text-blue-400">🇬🇧 English Audio Stream URL (.m3u8 or .mp4)</label>
-                    <input type="url" id="mediaEnglishUrl" placeholder="https://your-server.com/english-stream.m3u8 (Optional)" class="w-full bg-black/60 border border-gray-700 rounded-md p-2.5 text-sm text-white focus:outline-none focus:border-brand-red">
-                </div>
-
-                <div>
-                    <label class="block text-xs text-gray-400 mb-1 font-semibold">Short Description</label>
-                    <textarea id="mediaDesc" rows="2" placeholder="Brief summary of the title..." class="w-full bg-black/60 border border-gray-700 rounded-md p-2.5 text-sm text-white focus:outline-none focus:border-brand-red"></textarea>
-                </div>
-
-                <div class="flex justify-end space-x-3 pt-2">
-                    <button type="button" onclick="closeModal('addMediaModal')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-xs sm:text-sm font-semibold rounded-md">Cancel</button>
-                    <button type="submit" class="px-5 py-2 bg-brand-red hover:bg-brand-darkRed text-xs sm:text-sm font-semibold rounded-md">Save & Publish</button>
-                </div>
-            </form>
-        </div>
-    </div>
+    <!-- ... existing code ... -->
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        const defaultMediaData = [
-            {
-                id: '1',
-                title: 'Solo Leveling (Season 2)',
-                category: 'anime',
-                poster: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=600&auto=format&fit=crop',
-                hindiUrl: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
-                englishUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-                quality: '1080p Dual',
-                desc: 'Sung Jinwoo levels up endlessly in a monster-infested world.'
-            },
-            {
-                id: '2',
-                title: 'Jujutsu Kaisen',
-                category: 'anime',
-                poster: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=600&auto=format&fit=crop',
-                hindiUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4',
-                englishUrl: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
-                quality: '1080p Dual',
-                desc: 'Yuji Itadori swallows a cursed finger and enters the world of sorcery.'
-            },
-            {
-                id: '3',
-                title: 'Avengers: Endgame',
-                category: 'hollywood',
-                poster: 'https://images.unsplash.com/photo-1534809027769-b00d750a6bac?q=80&w=600&auto=format&fit=crop',
-                hindiUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
-                englishUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-                quality: '4K Ultra',
-                desc: 'The Avengers assemble once again to reverse Thanos actions.'
-            }
-        ];
-
-        let mediaList = [];
-        let hlsPlayer = null;
-        let currentActiveItem = null;
-        let currentLanguage = 'hindi';
-        let isAdminLoggedIn = false;
-        const ADMIN_PIN = "Sameer@2027-/"; // Admin Password Updated
-
-        window.onload = function() {
-            loadMediaFromStorage();
-            renderAllGrids();
-            setupNavbarScroll();
-            checkAdminSession();
-        };
-
-        function checkAdminSession() {
-            const adminSession = sessionStorage.getItem('streamverse_admin');
-            if (adminSession === 'true') {
-                setAdminUI(true);
-            } else {
-                setAdminUI(false);
-            }
-        }
-
-        function promptAdminLogin() {
-            if (isAdminLoggedIn) {
-                if (confirm("Are you sure you want to log out of Admin mode?")) {
-                    sessionStorage.removeItem('streamverse_admin');
-                    setAdminUI(false);
-                }
-            } else {
-                openModal('adminAuthModal');
-            }
-        }
-
-        function verifyAdminPin(e) {
-            e.preventDefault();
-            const inputPin = document.getElementById('adminPinInput').value;
-            const errorMsg = document.getElementById('pinErrorMsg');
-            
-            if (inputPin === ADMIN_PIN) {
-                sessionStorage.setItem('streamverse_admin', 'true');
-                setAdminUI(true);
-                closeModal('adminAuthModal');
-                document.getElementById('adminPinInput').value = '';
-                errorMsg.classList.add('hidden');
-            } else {
-                errorMsg.classList.remove('hidden');
-            }
-        }
-
-        function setAdminUI(isLoggedIn) {
-            isAdminLoggedIn = isLoggedIn;
-            const adminControls = document.getElementById('adminControls');
-            const adminLoginBtn = document.getElementById('adminLoginBtn');
-
-            if (isLoggedIn) {
-                adminControls.classList.remove('hidden');
-                adminLoginBtn.innerHTML = `<i class="fa-solid fa-unlock text-green-400"></i> Admin Active (Logout)`;
-                adminLoginBtn.classList.add('text-green-400');
-            } else {
-                adminControls.classList.add('hidden');
-                adminLoginBtn.innerHTML = `<i class="fa-solid fa-lock text-[10px]"></i> Admin Portal`;
-                adminLoginBtn.classList.remove('text-green-400');
-            }
-        }
-
-        function loadMediaFromStorage() {
-            const saved = localStorage.getItem('streamverse_media');
-            if (saved) {
-                try { mediaList = JSON.parse(saved); } catch (e) { mediaList = [...defaultMediaData]; }
-            } else {
-                mediaList = [...defaultMediaData];
-                saveMediaToStorage();
-            }
-        }
-
-        function saveMediaToStorage() {
-            localStorage.setItem('streamverse_media', JSON.stringify(mediaList));
-        }
-
-        function renderAllGrids() {
-            const categories = ['anime', 'hollywood', 'bollywood', 'kdrama'];
-            categories.forEach(cat => {
-                const filtered = mediaList.filter(item => item.category === cat);
-                const gridElem = document.getElementById(cat + 'Grid');
-                if (gridElem) {
-                    gridElem.innerHTML = '';
-                    if (filtered.length === 0) {
-                        gridElem.innerHTML = `<p class="text-xs text-gray-500 col-span-full">No titles in this category yet.</p>`;
-                    } else {
-                        filtered.forEach(item => gridElem.appendChild(createMediaCard(item)));
-                    }
-                }
-            });
-        }
-
-        function createMediaCard(item) {
-            const card = document.createElement('div');
-            card.className = "group relative bg-brand-cardBg rounded-lg overflow-hidden border border-gray-800/80 hover:border-brand-red transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl cursor-pointer";
-            card.onclick = () => openVideoPlayer(item);
-
-            card.innerHTML = `
-                <div class="relative aspect-[2/3] w-full overflow-hidden bg-gray-900">
-                    <img src="${item.poster}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=600&auto=format&fit=crop'">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80"></div>
-                    <span class="absolute top-2 left-2 bg-black/80 text-[10px] font-bold text-yellow-400 px-2 py-0.5 rounded border border-gray-700">Dual Audio</span>
-                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300 bg-black/40">
-                        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-brand-red rounded-full flex items-center justify-center text-white shadow-lg transform group-hover:scale-110 transition">
-                            <i class="fa-solid fa-play ml-1"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-3">
-                    <h3 class="text-xs sm:text-sm font-bold text-white truncate">${item.title}</h3>
-                    <p class="text-[11px] text-gray-400 capitalize mt-0.5">${item.category}</p>
-                </div>
-            `;
-            return card;
-        }
-
-        function openVideoPlayer(item) {
-            currentActiveItem = item;
-            currentLanguage = 'hindi'; // Default to Hindi Audio
-            
-            document.getElementById('playerTitle').innerText = item.title;
-            document.getElementById('playerDesc').innerText = item.desc || 'No description available.';
-            document.getElementById('playerBadge').innerText = item.category.toUpperCase();
-
-            document.getElementById('videoModal').classList.remove('hidden');
-            loadStreamSource();
-        }
-
-        function switchAudioLanguage(lang) {
-            if (currentLanguage === lang) return;
-            currentLanguage = lang;
-
-            const hindiBtn = document.getElementById('langHindiBtn');
-            const engBtn = document.getElementById('langEnglishBtn');
-            const audioLabel = document.getElementById('currentAudioLabel');
-
-            if (lang === 'hindi') {
-                hindiBtn.className = "px-3 py-1 text-xs font-bold rounded-md bg-brand-red text-white transition";
-                engBtn.className = "px-3 py-1 text-xs font-bold rounded-md bg-gray-800 text-gray-300 hover:bg-gray-700 transition";
-                audioLabel.innerText = "Hindi Audio";
-            } else {
-                engBtn.className = "px-3 py-1 text-xs font-bold rounded-md bg-brand-red text-white transition";
-                hindiBtn.className = "px-3 py-1 text-xs font-bold rounded-md bg-gray-800 text-gray-300 hover:bg-gray-700 transition";
-                audioLabel.innerText = "English Audio";
-            }
-
-            loadStreamSource();
-        }
-
-        function loadStreamSource() {
-            if (!currentActiveItem) return;
-
-            const videoElem = document.getElementById('mainVideoPlayer');
-            const streamUrl = (currentLanguage === 'hindi') 
-                ? (currentActiveItem.hindiUrl || currentActiveItem.videoUrl)
-                : (currentActiveItem.englishUrl || currentActiveItem.hindiUrl || currentActiveItem.videoUrl);
-
-            if (hlsPlayer) {
-                hlsPlayer.destroy();
-                hlsPlayer = null;
-            }
-
-            if (streamUrl.includes('.m3u8') && Hls.isSupported()) {
-                hlsPlayer = new Hls({ capLevelToPlayerSize: true, autoStartLoad: true });
-                hlsPlayer.loadSource(streamUrl);
-                hlsPlayer.attachMedia(videoElem);
-                hlsPlayer.on(Hls.Events.MANIFEST_PARSED, function() { videoElem.play(); });
-            } else {
-                videoElem.src = streamUrl;
-                videoElem.play();
-            }
-        }
-
-        function closeVideoPlayer() {
-            const videoElem = document.getElementById('mainVideoPlayer');
-            videoElem.pause();
-            videoElem.src = '';
-            if (hlsPlayer) { hlsPlayer.destroy(); hlsPlayer = null; }
-            document.getElementById('videoModal').classList.add('hidden');
-        }
-
-        function playFeaturedVideo() {
-            openVideoPlayer(mediaList[0] || defaultMediaData[0]);
-        }
-
-        function handleSearch() {
-            const query = document.getElementById('searchInput').value.toLowerCase().trim();
-            const searchSection = document.getElementById('searchResultsSection');
-            const searchGrid = document.getElementById('searchResultsGrid');
-            const mainContent = document.getElementById('mainContentRows');
-
-            if (query.length > 0) {
-                mainContent.classList.add('hidden');
-                searchSection.classList.remove('hidden');
-                const matched = mediaList.filter(item => 
-                    item.title.toLowerCase().includes(query) || 
-                    item.category.toLowerCase().includes(query)
-                );
-                searchGrid.innerHTML = '';
-                if (matched.length === 0) {
-                    searchGrid.innerHTML = `<p class="text-sm text-gray-400 col-span-full">No titles match "${query}".</p>`;
-                } else {
-                    matched.forEach(item => searchGrid.appendChild(createMediaCard(item)));
-                }
-            } else {
-                searchSection.classList.add('hidden');
-                mainContent.classList.remove('hidden');
-            }
-        }
+        // ... existing code ...
 
         function filterCategory(cat) {
             document.getElementById('searchInput').value = '';
             document.getElementById('searchResultsSection').classList.add('hidden');
             document.getElementById('mainContentRows').classList.remove('hidden');
+
+            // Highlight Active Category Button
+            const btns = document.querySelectorAll('.cat-filter-btn');
+            btns.forEach(btn => {
+                btn.className = "cat-filter-btn bg-brand-cardBg hover:bg-brand-hoverBg text-gray-300 text-xs sm:text-sm font-semibold px-4 py-2 rounded-full whitespace-nowrap transition border border-gray-800";
+            });
+            const activeBtn = document.getElementById('btn-' + cat);
+            if (activeBtn) {
+                activeBtn.className = "cat-filter-btn active-cat bg-brand-red text-white text-xs sm:text-sm font-semibold px-4 py-2 rounded-full whitespace-nowrap transition shadow-md";
+            }
 
             const rows = ['anime', 'hollywood', 'bollywood', 'kdrama'];
             rows.forEach(r => {
@@ -575,41 +156,7 @@
             });
         }
 
-        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
-        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-
-        function handleAddMedia(e) {
-            e.preventDefault();
-            const newMedia = {
-                id: Date.now().toString(),
-                title: document.getElementById('mediaTitle').value.trim(),
-                category: document.getElementById('mediaCategory').value,
-                quality: document.getElementById('mediaQuality').value.trim() || '1080p Dual',
-                poster: document.getElementById('mediaPoster').value.trim(),
-                hindiUrl: document.getElementById('mediaHindiUrl').value.trim(),
-                englishUrl: document.getElementById('mediaEnglishUrl').value.trim() || document.getElementById('mediaHindiUrl').value.trim(),
-                desc: document.getElementById('mediaDesc').value.trim() || 'No description.'
-            };
-
-            mediaList.unshift(newMedia);
-            saveMediaToStorage();
-            renderAllGrids();
-            document.getElementById('addMediaForm').reset();
-            closeModal('addMediaModal');
-            filterCategory(newMedia.category);
-        }
-
-        function setupNavbarScroll() {
-            window.addEventListener('scroll', () => {
-                const nav = document.getElementById('navbar');
-                if (window.scrollY > 50) nav.classList.add('bg-black', 'shadow-lg');
-                else nav.classList.remove('bg-black');
-            });
-        }
-
-        function scrollToContent() {
-            document.getElementById('mainContentRows').scrollIntoView({ behavior: 'smooth' });
-        }
+        // ... existing code ...
     </script>
 </body>
 </html>
