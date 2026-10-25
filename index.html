@@ -72,6 +72,14 @@
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: #E50914;
         }
+
+        .episode-card {
+            transition: all 0.2s ease;
+        }
+        .episode-card:hover {
+            background-color: #262626;
+            transform: translateX(4px);
+        }
     </style>
 </head>
 <body class="bg-brand-black text-white min-h-screen flex flex-col justify-between selection:bg-brand-red selection:text-white">
@@ -127,23 +135,14 @@
                 
                 <h1 class="text-3xl sm:text-5xl md:text-6xl font-black text-white drop-shadow-lg leading-tight" id="heroTitle">Solo Leveling</h1>
                 
-                <!-- Season & Episode Quick Selector -->
-                <div id="heroSeasonBar" class="flex items-center space-x-3 pt-1">
-                    <span class="text-xs font-bold text-gray-300 uppercase tracking-wider">Select Season:</span>
-                    <select id="heroSeasonSelect" onchange="changeHeroSeason(this.value)" class="bg-gray-900/90 text-white text-xs border border-gray-700 rounded-md px-3 py-1.5 focus:outline-none focus:border-brand-red font-semibold">
-                        <option value="s1">Season 1 (12 Episodes)</option>
-                        <option value="s2">Season 2 (Arise from the Shadow)</option>
-                    </select>
-                </div>
-
                 <p class="text-sm sm:text-base text-gray-300 line-clamp-3 drop-shadow max-w-xl" id="heroDesc">
                     In a world where hunters battle deadly monsters, Sung Jinwoo, the weakest hunter, acquires a mysterious system allowing him to level up endlessly.
                 </p>
 
                 <div class="flex items-center space-x-3 pt-2">
-                    <button id="heroPlayBtn" onclick="playFeaturedVideo()" class="bg-white hover:bg-gray-200 text-black px-6 py-3 rounded-lg font-black text-sm sm:text-base flex items-center space-x-2 transition transform active:scale-95 shadow-xl">
+                    <button id="heroPlayBtn" onclick="openMediaDetails('1')" class="bg-white hover:bg-gray-200 text-black px-6 py-3 rounded-lg font-black text-sm sm:text-base flex items-center space-x-2 transition transform active:scale-95 shadow-xl">
                         <i class="fa-solid fa-play text-lg"></i>
-                        <span>Watch Now</span>
+                        <span>Watch Episodes</span>
                     </button>
                     <button onclick="scrollToContent()" class="bg-gray-800/80 hover:bg-gray-700 text-white px-5 py-3 rounded-lg font-bold text-sm sm:text-base flex items-center space-x-2 transition backdrop-blur-md border border-gray-700">
                         <i class="fa-solid fa-layer-group"></i>
@@ -232,6 +231,65 @@
         <p>© 2026 StreamVerse. Free Hindi Dubbed HD Streaming Platform.</p>
     </footer>
 
+    <!-- SHOW DETAILS & EPISODE LIST MODAL (Guided by Screenshot 2) -->
+    <div id="detailsModal" class="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-3 sm:p-6 hidden backdrop-blur-md overflow-y-auto custom-scrollbar">
+        <div class="bg-[#181818] border border-gray-800 rounded-2xl w-full max-w-4xl relative shadow-2xl overflow-hidden my-auto max-h-[92vh] flex flex-col">
+            
+            <!-- Close Button -->
+            <button onclick="closeModal('detailsModal')" class="absolute top-4 right-4 z-20 bg-black/70 hover:bg-brand-red text-white w-9 h-9 rounded-full flex items-center justify-center transition border border-gray-700">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <!-- Modal Header Banner -->
+            <div id="modalHeaderBg" class="relative w-full h-52 sm:h-72 bg-cover bg-center flex items-end p-6 flex-shrink-0" style="background-image: url('');">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#181818] via-[#181818]/60 to-transparent"></div>
+                <div class="relative z-10 space-y-2">
+                    <div class="flex items-center gap-2">
+                        <span id="modalBadge" class="bg-brand-red text-white text-[10px] sm:text-xs font-black px-2.5 py-0.5 rounded uppercase">Hindi Dubbed HD</span>
+                        <span id="modalCategory" class="bg-gray-800 text-gray-300 text-[10px] sm:text-xs font-bold px-2.5 py-0.5 rounded uppercase border border-gray-700">Anime</span>
+                    </div>
+                    <h2 id="modalTitle" class="text-2xl sm:text-4xl font-black text-white drop-shadow-md">Show Title</h2>
+                </div>
+            </div>
+
+            <!-- Modal Body Content -->
+            <div class="p-4 sm:p-6 space-y-6 overflow-y-auto custom-scrollbar flex-grow">
+                <!-- Description -->
+                <div class="grid sm:grid-cols-3 gap-4 border-b border-gray-800 pb-6">
+                    <div class="sm:col-span-2 space-y-2">
+                        <p id="modalDesc" class="text-xs sm:text-sm text-gray-300 leading-relaxed"></p>
+                    </div>
+                    <div class="text-xs text-gray-400 space-y-1 sm:border-l sm:border-gray-800 sm:pl-4">
+                        <div><span class="text-gray-500 font-semibold">Audio:</span> <span class="text-yellow-400 font-bold">Hindi Dubbed</span></div>
+                        <div><span class="text-gray-500 font-semibold">Quality:</span> 1080p Full HD</div>
+                        <div><span class="text-gray-500 font-semibold">Status:</span> Completed / Ongoing</div>
+                    </div>
+                </div>
+
+                <!-- EPISODES SECTION HEADER -->
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xl font-extrabold text-white flex items-center gap-2">
+                        <span>Episodes</span>
+                    </h3>
+
+                    <!-- Season Selector Dropdown -->
+                    <div class="flex items-center space-x-2 bg-black/60 border border-gray-700 rounded-lg px-3 py-1.5">
+                        <i class="fa-solid fa-list-ul text-brand-red text-xs"></i>
+                        <select id="seasonSelect" onchange="renderEpisodeList(this.value)" class="bg-transparent text-xs sm:text-sm font-bold text-white focus:outline-none cursor-pointer">
+                            <option value="s1" class="bg-gray-900">Season 1</option>
+                            <option value="s2" class="bg-gray-900">Season 2</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- EPISODES LIST CONTAINER -->
+                <div id="episodesContainer" class="space-y-3">
+                    <!-- Dynamically populated episodes list -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- VIDEO PLAYER MODAL -->
     <div id="playerModal" class="fixed inset-0 z-50 bg-black/95 flex flex-col justify-between hidden backdrop-blur-lg">
         <!-- Player Header -->
@@ -241,33 +299,38 @@
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
                 <div>
-                    <h3 id="playerTitle" class="text-lg font-bold text-white">Title Name</h3>
-                    <span id="playerBadge" class="text-xs bg-brand-red text-white font-bold px-2 py-0.5 rounded uppercase">Hindi Dubbed</span>
+                    <h3 id="playerTitle" class="text-sm sm:text-lg font-bold text-white">Title Name</h3>
+                    <p id="playerSubTitle" class="text-xs text-brand-red font-semibold">Episode 1</p>
                 </div>
             </div>
 
-            <!-- Season Selector inside Player -->
+            <!-- Season / Episode Switcher in Player -->
             <div class="flex items-center space-x-3">
-                <div id="playerSeasonContainer" class="hidden flex items-center space-x-2 bg-gray-900 border border-gray-700 px-3 py-1 rounded-lg">
-                    <i class="fa-solid fa-tv text-brand-red text-xs"></i>
-                    <select id="playerSeasonSelect" onchange="switchPlayerSeason(this.value)" class="bg-transparent text-xs text-white focus:outline-none font-bold">
-                        <option value="s1">Season 1</option>
-                        <option value="s2">Season 2</option>
-                    </select>
-                </div>
-
+                <button onclick="togglePlayerEpDrawer()" class="bg-gray-900 border border-gray-700 hover:border-brand-red text-white text-xs px-3 py-1.5 rounded-lg flex items-center gap-2 transition font-bold">
+                    <i class="fa-solid fa-list-ol text-brand-red"></i>
+                    <span class="hidden sm:inline">Episodes List</span>
+                </button>
                 <button onclick="closePlayer()" class="text-gray-400 hover:text-brand-red text-2xl px-2 transition">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
         </div>
 
-        <!-- Player Video Container -->
+        <!-- Video Frame -->
         <div class="relative w-full flex-grow flex items-center justify-center bg-black overflow-hidden">
             <video id="mainVideoPlayer" controls class="w-full h-full max-h-[80vh] object-contain"></video>
+
+            <!-- IN-PLAYER EPISODE DRAWER OVERLAY -->
+            <div id="playerEpDrawer" class="absolute top-0 right-0 bottom-0 w-80 bg-black/95 border-l border-gray-800 p-4 transform translate-x-full transition-transform duration-300 z-20 flex flex-col overflow-hidden">
+                <div class="flex items-center justify-between pb-3 border-b border-gray-800 mb-3">
+                    <h4 class="font-bold text-sm text-white">Select Episode</h4>
+                    <button onclick="togglePlayerEpDrawer()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div id="inPlayerEpList" class="overflow-y-auto custom-scrollbar flex-grow space-y-2"></div>
+            </div>
         </div>
 
-        <!-- Player Bottom Controls / Next Episode Bar -->
+        <!-- Player Bottom Bar -->
         <div class="p-4 bg-black/90 border-t border-gray-800 flex items-center justify-between">
             <div class="text-xs text-gray-400">
                 Playing in: <span class="text-yellow-400 font-bold">Hindi Dubbed HD</span>
@@ -367,17 +430,34 @@
         const ADMIN_SECRET = "Sameer@2027-/";
         let isAdminLoggedIn = false;
 
-        // Sample Default Library Data
+        // Structured Database with Multi-Season & Episode Data
         let mediaDatabase = [
             {
                 id: "1",
-                title: "Solo Leveling (Season 1 & 2)",
+                title: "Solo Leveling",
                 category: "anime",
                 badge: "Hindi Dubbed HD",
                 poster: "https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=800&auto=format&fit=crop",
-                streamUrl: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
-                desc: "Sung Jinwoo, the weakest hunter, acquires a system allowing him to level up endlessly.",
-                hasSeasons: true
+                desc: "In a world where hunters battle deadly monsters, Sung Jinwoo, the weakest hunter, acquires a mysterious system allowing him to level up endlessly.",
+                seasons: {
+                    "s1": {
+                        name: "Season 1 (12 EP)",
+                        episodes: [
+                            { ep: 1, title: "I'm Used to It", duration: "24m", streamUrl: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", desc: "Jinwoo and his party venture into a D-rank dungeon that turns out to be a deadly double dungeon.", thumb: "https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=400&auto=format&fit=crop" },
+                            { ep: 2, title: "If I Had One More Chance", duration: "23m", streamUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", desc: "Jinwoo wakes up in a hospital bed with a mysterious floating quest screen only he can see.", thumb: "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=400&auto=format&fit=crop" },
+                            { ep: 3, title: "It's Like a Game", duration: "24m", streamUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4", desc: "Jinwoo completes his daily quests and enters an instant dungeon to test his new powers.", thumb: "https://images.unsplash.com/photo-1563089145-599997674d42?q=80&w=400&auto=format&fit=crop" },
+                            { ep: 4, title: "I've Gotta Get Stronger", duration: "24m", streamUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", desc: "Facing a giant snake boss, Jinwoo pushes his limits to surpass his hunter classification.", thumb: "https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=400&auto=format&fit=crop" },
+                            { ep: 5, title: "A Pretty Good Deal", duration: "24m", streamUrl: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", desc: "Jinwoo joins a raid party with Hwang Dongsuk, unaware of the trap waiting inside.", thumb: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=400&auto=format&fit=crop" }
+                        ]
+                    },
+                    "s2": {
+                        name: "Season 2: Arise from the Shadow",
+                        episodes: [
+                            { ep: 1, title: "Arise", duration: "25m", streamUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", desc: "Jinwoo unlocks the Shadow Monarch powers and summons shadow soldiers.", thumb: "https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=400&auto=format&fit=crop" },
+                            { ep: 2, title: "The Monarch of Shadows", duration: "24m", streamUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4", desc: "S-Rank monarchs notice Jinwoo's sudden power surge across the globe.", thumb: "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=400&auto=format&fit=crop" }
+                        ]
+                    }
+                }
             },
             {
                 id: "2",
@@ -385,8 +465,16 @@
                 category: "anime",
                 badge: "Hindi Dubbed",
                 poster: "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=800&auto=format&fit=crop",
-                streamUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-                desc: "Tanjiro Kamado sets out to become a demon slayer after his family is slaughtered."
+                desc: "Tanjiro Kamado sets out to become a demon slayer after his family is slaughtered and his sister turned into a demon.",
+                seasons: {
+                    "s1": {
+                        name: "Unwavering Resolve Arc",
+                        episodes: [
+                            { ep: 1, title: "Cruelty", duration: "24m", streamUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", desc: "Tanjiro returns home from selling charcoal to find his family slaughtered.", thumb: "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=400&auto=format&fit=crop" },
+                            { ep: 2, title: "Trainer Sakonji Urokodaki", duration: "23m", streamUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4", desc: "Tanjiro heads towards Mt. Sagiri under Giyu Tomioka's advice.", thumb: "https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=400&auto=format&fit=crop" }
+                        ]
+                    }
+                }
             },
             {
                 id: "3",
@@ -394,8 +482,15 @@
                 category: "hollywood",
                 badge: "Hindi Dubbed 4K",
                 poster: "https://images.unsplash.com/photo-1563089145-599997674d42?q=80&w=800&auto=format&fit=crop",
-                streamUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-                desc: "The Avengers assemble once more in order to reverse Thanos' actions."
+                desc: "The Avengers assemble once more in order to reverse Thanos' actions and restore balance to the universe.",
+                seasons: {
+                    "s1": {
+                        name: "Full Movie",
+                        episodes: [
+                            { ep: 1, title: "Avengers: Endgame (Full Movie)", duration: "181m", streamUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4", desc: "The epic finale to the Infinity Saga.", thumb: "https://images.unsplash.com/photo-1563089145-599997674d42?q=80&w=400&auto=format&fit=crop" }
+                        ]
+                    }
+                }
             },
             {
                 id: "4",
@@ -403,31 +498,40 @@
                 category: "bollywood",
                 badge: "Hindi Original HD",
                 poster: "https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=800&auto=format&fit=crop",
-                streamUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-                desc: "A high-octane action thriller outlining the emotional journey of a man driven by a personal vendetta."
+                desc: "A high-octane action thriller outlining the emotional journey of a man driven by a personal vendetta.",
+                seasons: {
+                    "s1": {
+                        name: "Full Movie",
+                        episodes: [
+                            { ep: 1, title: "Jawan (Full Feature)", duration: "169m", streamUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", desc: "High-octane action starring Shah Rukh Khan.", thumb: "https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=400&auto=format&fit=crop" }
+                        ]
+                    }
+                }
             }
         ];
 
         let heroSlides = [
             {
-                title: "Solo Leveling (Season 2)",
+                id: "1",
+                title: "Solo Leveling (Season 1 & 2)",
                 category: "FEATURED ANIME",
                 poster: "https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1600&auto=format&fit=crop",
-                streamUrl: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
                 desc: "Sung Jinwoo unlocks the Shadow Monarch powers and battles S-Rank monarch threats."
             },
             {
-                title: "Jujutsu Kaisen (Hindi Dubbed)",
+                id: "2",
+                title: "Demon Slayer: Kimetsu no Yaiba",
                 category: "TRENDING ANIME",
-                poster: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=1600&auto=format&fit=crop",
-                streamUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-                desc: "Yuji Itadori swallows a cursed finger to save his friends and enters the world of Jujutsu Sorcerers."
+                poster: "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1600&auto=format&fit=crop",
+                desc: "Tanjiro sets out to turn his sister back into a human."
             }
         ];
 
         let currentHeroIndex = 0;
+        let activeShow = null;
+        let activeSeasonKey = "s1";
+        let currentPlayingEpIndex = 0;
         let hlsInstance = null;
-        let currentPlayingIndex = 0;
 
         window.onload = function() {
             renderMediaGrid();
@@ -441,8 +545,8 @@
                 if (!grid) return;
                 
                 const items = mediaDatabase.filter(m => m.category === cat);
-                grid.innerHTML = items.map((item, idx) => `
-                    <div onclick="playMediaById('${item.id}')" class="card-zoom cursor-pointer bg-brand-cardBg rounded-xl overflow-hidden border border-gray-800 flex flex-col justify-between">
+                grid.innerHTML = items.map((item) => `
+                    <div onclick="openMediaDetails('${item.id}')" class="card-zoom cursor-pointer bg-brand-cardBg rounded-xl overflow-hidden border border-gray-800 flex flex-col justify-between">
                         <div class="relative aspect-[2/3] w-full bg-gray-900">
                             <img src="${item.poster}" alt="${item.title}" class="w-full h-full object-cover">
                             <span class="absolute top-2 left-2 bg-brand-red text-white text-[10px] font-black px-2 py-0.5 rounded shadow">${item.badge}</span>
@@ -454,6 +558,109 @@
                     </div>
                 `).join('');
             });
+        }
+
+        // OPEN SHOW DETAILS AND DISPLAY EPISODES LIST (Guided by Screenshot 2)
+        function openMediaDetails(id) {
+            const item = mediaDatabase.find(m => m.id === id);
+            if (!item) return;
+            activeShow = item;
+
+            document.getElementById('modalTitle').innerText = item.title;
+            document.getElementById('modalBadge').innerText = item.badge;
+            document.getElementById('modalCategory').innerText = item.category.toUpperCase();
+            document.getElementById('modalDesc').innerText = item.desc;
+            document.getElementById('modalHeaderBg').style.backgroundImage = `url('${item.poster}')`;
+
+            // Populate Season Selector
+            const seasonSelect = document.getElementById('seasonSelect');
+            const seasonKeys = Object.keys(item.seasons);
+            seasonSelect.innerHTML = seasonKeys.map(key => `
+                <option value="${key}" class="bg-gray-900">${item.seasons[key].name}</option>
+            `).join('');
+
+            activeSeasonKey = seasonKeys[0] || "s1";
+            seasonSelect.value = activeSeasonKey;
+
+            renderEpisodeList(activeSeasonKey);
+            openModal('detailsModal');
+        }
+
+        // RENDER EPISODES LIST
+        function renderEpisodeList(seasonKey) {
+            activeSeasonKey = seasonKey;
+            const seasonData = activeShow.seasons[seasonKey];
+            const container = document.getElementById('episodesContainer');
+
+            if (!seasonData || !seasonData.episodes || seasonData.episodes.length === 0) {
+                container.innerHTML = `<p class="text-gray-400 text-xs py-4">No episodes available for this season.</p>`;
+                return;
+            }
+
+            container.innerHTML = seasonData.episodes.map((ep, idx) => `
+                <div onclick="startEpisodePlayback(${idx})" class="episode-card flex items-center space-x-4 p-3 bg-brand-cardBg rounded-xl border border-gray-800/80 cursor-pointer group">
+                    <span class="text-lg font-black text-gray-500 group-hover:text-white w-6 text-center">${ep.ep}</span>
+                    
+                    <div class="relative w-28 sm:w-36 aspect-video bg-gray-900 rounded-lg overflow-hidden flex-shrink-0">
+                        <img src="${ep.thumb}" alt="Episode ${ep.ep}" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-black/40 group-hover:bg-black/10 flex items-center justify-center transition">
+                            <i class="fa-solid fa-play text-white text-lg opacity-80 group-hover:opacity-100 group-hover:scale-110 transition"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex-grow space-y-1">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-xs sm:text-sm font-bold text-white group-hover:text-brand-red transition">Episode ${ep.ep} - ${ep.title}</h4>
+                            <span class="text-[11px] font-semibold text-gray-400">${ep.duration}</span>
+                        </div>
+                        <p class="text-[11px] text-gray-400 line-clamp-2">${ep.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // PLAY DIRECT SELECTED EPISODE
+        function startEpisodePlayback(index) {
+            currentPlayingEpIndex = index;
+            const episode = activeShow.seasons[activeSeasonKey].episodes[index];
+            
+            document.getElementById('playerTitle').innerText = activeShow.title;
+            document.getElementById('playerSubTitle').innerText = `Episode ${episode.ep} - ${episode.title}`;
+            
+            closeModal('detailsModal');
+            openPlayerStream(episode.streamUrl);
+            renderInPlayerEpList();
+        }
+
+        function renderInPlayerEpList() {
+            const list = document.getElementById('inPlayerEpList');
+            const episodes = activeShow.seasons[activeSeasonKey].episodes;
+
+            list.innerHTML = episodes.map((ep, idx) => `
+                <div onclick="startEpisodePlayback(${idx})" class="p-2.5 rounded-lg border ${idx === currentPlayingEpIndex ? 'bg-brand-red/20 border-brand-red' : 'bg-gray-900 border-gray-800'} cursor-pointer hover:bg-gray-800 flex items-center justify-between">
+                    <div class="text-xs font-bold text-white line-clamp-1">Ep ${ep.ep}: ${ep.title}</div>
+                    <span class="text-[10px] text-gray-400">${ep.duration}</span>
+                </div>
+            `).join('');
+        }
+
+        function togglePlayerEpDrawer() {
+            const drawer = document.getElementById('playerEpDrawer');
+            drawer.classList.toggle('translate-x-full');
+        }
+
+        function playNextEpisode() {
+            const episodes = activeShow.seasons[activeSeasonKey].episodes;
+            if (currentPlayingEpIndex < episodes.length - 1) {
+                startEpisodePlayback(currentPlayingEpIndex + 1);
+            } else {
+                alert('No more episodes in this season!');
+            }
+        }
+
+        function playFeaturedVideo() {
+            const featured = heroSlides[currentHeroIndex];
+            openMediaDetails(featured.id);
         }
 
         function filterCategory(cat) {
@@ -499,7 +706,7 @@
                 searchGrid.innerHTML = `<p class="col-span-full text-center text-gray-400 py-12">No Hindi Dubbed titles found matching "${query}"</p>`;
             } else {
                 searchGrid.innerHTML = results.map(item => `
-                    <div onclick="playMediaById('${item.id}')" class="card-zoom cursor-pointer bg-brand-cardBg rounded-xl overflow-hidden border border-gray-800 flex flex-col justify-between">
+                    <div onclick="openMediaDetails('${item.id}')" class="card-zoom cursor-pointer bg-brand-cardBg rounded-xl overflow-hidden border border-gray-800 flex flex-col justify-between">
                         <div class="relative aspect-[2/3] w-full bg-gray-900">
                             <img src="${item.poster}" alt="${item.title}" class="w-full h-full object-cover">
                             <span class="absolute top-2 left-2 bg-brand-red text-white text-[10px] font-black px-2 py-0.5 rounded shadow">${item.badge}</span>
@@ -511,29 +718,6 @@
                     </div>
                 `).join('');
             }
-        }
-
-        function playMediaById(id) {
-            const item = mediaDatabase.find(m => m.id === id);
-            if (!item) return;
-            currentPlayingIndex = mediaDatabase.findIndex(m => m.id === id);
-
-            document.getElementById('playerTitle').innerText = item.title;
-            document.getElementById('playerBadge').innerText = item.badge;
-            
-            const seasonContainer = document.getElementById('playerSeasonContainer');
-            if (item.hasSeasons) {
-                seasonContainer.classList.remove('hidden');
-            } else {
-                seasonContainer.classList.add('hidden');
-            }
-
-            openPlayerStream(item.streamUrl);
-        }
-
-        function playFeaturedVideo() {
-            const featured = heroSlides[currentHeroIndex];
-            openPlayerStream(featured.streamUrl);
         }
 
         function openPlayerStream(url) {
@@ -573,19 +757,12 @@
             modal.classList.add('hidden');
         }
 
-        function playNextEpisode() {
-            currentPlayingIndex = (currentPlayingIndex + 1) % mediaDatabase.length;
-            const nextItem = mediaDatabase[currentPlayingIndex];
-            playMediaById(nextItem.id);
-        }
-
         function verifyAdminLogin() {
             const pass = document.getElementById('adminPasswordInput').value;
             if (pass === ADMIN_SECRET) {
                 isAdminLoggedIn = true;
                 document.getElementById('adminControls').classList.remove('hidden');
                 closeModal('adminLoginModal');
-                alert('Admin Logged In Successfully!');
             } else {
                 alert('Incorrect Secret Password!');
             }
@@ -610,14 +787,20 @@
                 category,
                 badge: badge || "Hindi Dubbed",
                 poster: poster || "https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=800&auto=format&fit=crop",
-                streamUrl,
-                desc
+                desc,
+                seasons: {
+                    "s1": {
+                        name: "Season 1",
+                        episodes: [
+                            { ep: 1, title: title + " (Full Stream)", duration: "45m", streamUrl, desc, thumb: poster }
+                        ]
+                    }
+                }
             };
 
             mediaDatabase.unshift(newObj);
             renderMediaGrid();
             closeModal('addMediaModal');
-            alert('New Title Published Successfully!');
         }
 
         function openModal(id) {
