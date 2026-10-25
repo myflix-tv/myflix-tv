@@ -191,10 +191,10 @@
             </div>
             <form onsubmit="verifyAdminPin(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs text-gray-400 mb-1 font-semibold">Enter Admin Secret PIN</label>
-                    <input type="password" id="adminPinInput" required placeholder="Default PIN: 1234" class="w-full bg-black/60 border border-gray-700 rounded-md p-2.5 text-center tracking-widest text-lg text-white focus:outline-none focus:border-brand-red">
+                    <label class="block text-xs text-gray-400 mb-1 font-semibold">Enter Admin Secret Password</label>
+                    <input type="password" id="adminPinInput" required placeholder="Enter Secret Password" class="w-full bg-black/60 border border-gray-700 rounded-md p-2.5 text-center tracking-widest text-lg text-white focus:outline-none focus:border-brand-red">
                 </div>
-                <p id="pinErrorMsg" class="text-red-500 text-xs text-center hidden">Incorrect PIN! Access Denied.</p>
+                <p id="pinErrorMsg" class="text-red-500 text-xs text-center hidden">Incorrect Password! Access Denied.</p>
                 <div class="flex justify-end space-x-2">
                     <button type="button" onclick="closeModal('adminAuthModal')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-xs font-semibold rounded-md">Cancel</button>
                     <button type="submit" class="px-4 py-2 bg-brand-red hover:bg-brand-darkRed text-xs font-semibold rounded-md">Login as Admin</button>
@@ -353,7 +353,7 @@
         let currentActiveItem = null;
         let currentLanguage = 'hindi';
         let isAdminLoggedIn = false;
-        const ADMIN_PIN = "1234"; // Default Password for Admin
+        const ADMIN_PIN = "Sameer@2027-/"; // Admin Password Updated
 
         window.onload = function() {
             loadMediaFromStorage();
