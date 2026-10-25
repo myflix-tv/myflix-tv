@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StreamVerse - Ultimate Free Streaming</title>
+    <title>StreamVerse - Ultimate Dual Audio Streaming</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -45,7 +45,8 @@
         <div class="flex items-center space-x-8">
             <a href="#" class="flex items-center space-x-2 text-2xl sm:text-3xl font-extrabold text-brand-red tracking-wider uppercase">
                 <i class="fa-solid font-black fa-play text-brand-red"></i>
-                <span>Stream<span class="text-white">Verse</span></span>
+                <!-- Apne App Ka Naam Yahan Badal Sakte Hain -->
+                <span>My<span class="text-white">Flix</span></span>
             </a>
             
             <nav class="hidden md:flex space-x-6 text-sm font-medium text-gray-300">
@@ -64,11 +65,13 @@
                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400 text-xs sm:text-sm"></i>
             </div>
 
-            <!-- Add Custom Content Button -->
-            <button onclick="openModal('addMediaModal')" class="bg-brand-red hover:bg-brand-darkRed text-white text-xs sm:text-sm px-3 py-2 rounded-md font-semibold flex items-center space-x-1.5 transition">
-                <i class="fa-solid fa-plus"></i>
-                <span class="hidden sm:inline">Add Media</span>
-            </button>
+            <!-- Admin Only Add Content Button (Hidden for Normal Viewers) -->
+            <div id="adminControls" class="hidden">
+                <button onclick="openModal('addMediaModal')" class="bg-brand-red hover:bg-brand-darkRed text-white text-xs sm:text-sm px-3 py-2 rounded-md font-semibold flex items-center space-x-1.5 transition">
+                    <i class="fa-solid fa-plus"></i>
+                    <span class="hidden sm:inline">Add Media</span>
+                </button>
+            </div>
         </div>
     </header>
 
@@ -86,7 +89,7 @@
                         <i class="fa-solid fa-language"></i> Dual Audio (Hindi + Eng)
                     </span>
                 </div>
-                <h1 class="text-3xl sm:text-5xl md:text-6xl font-black text-white drop-shadow-md leading-tight" id="heroTitle">Solo Leveling (Season 2)</h1>
+                <h1 class="text-3xl sm:text-5xl md:text-6xl font-black text-white drop-shadow-md leading-tight" id="heroTitle">Solo Leveling</h1>
                 <p class="text-sm sm:text-base text-gray-300 line-clamp-3 drop-shadow" id="heroDesc">
                     In a world where hunters must battle deadly monsters to protect humanity, Sung Jinwoo, the weakest hunter, acquires a mysterious system that allows him to level up endlessly.
                 </p>
@@ -167,7 +170,38 @@
     <footer class="bg-black/80 border-t border-gray-800 py-8 px-4 sm:px-12 text-center text-xs text-gray-500 space-y-2">
         <p>© 2026 StreamVerse Platform. Free high-performance dual-audio streaming solution.</p>
         <p class="text-gray-600">Supports Hindi & English Audio Switching with HLS Adaptive Bitrate.</p>
+        <div class="pt-2">
+            <button id="adminLoginBtn" onclick="promptAdminLogin()" class="text-gray-600 hover:text-brand-red transition text-[11px] underline">
+                <i class="fa-solid fa-lock text-[10px]"></i> Admin Portal
+            </button>
+        </div>
     </footer>
+
+    <!-- ADMIN LOGIN MODAL -->
+    <div id="adminAuthModal" class="fixed inset-0 z-50 hidden bg-black/80 flex justify-center items-center p-4 backdrop-blur-sm">
+        <div class="w-full max-w-sm bg-brand-cardBg rounded-xl p-6 border border-gray-800 shadow-2xl relative">
+            <div class="flex justify-between items-center mb-4 border-b border-gray-800 pb-3">
+                <h3 class="text-base font-bold text-white flex items-center space-x-2">
+                    <i class="fa-solid fa-user-shield text-brand-red"></i>
+                    <span>Admin Security Access</span>
+                </h3>
+                <button onclick="closeModal('adminAuthModal')" class="text-gray-400 hover:text-white">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <form onsubmit="verifyAdminPin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1 font-semibold">Enter Admin Secret PIN</label>
+                    <input type="password" id="adminPinInput" required placeholder="Default PIN: 1234" class="w-full bg-black/60 border border-gray-700 rounded-md p-2.5 text-center tracking-widest text-lg text-white focus:outline-none focus:border-brand-red">
+                </div>
+                <p id="pinErrorMsg" class="text-red-500 text-xs text-center hidden">Incorrect PIN! Access Denied.</p>
+                <div class="flex justify-end space-x-2">
+                    <button type="button" onclick="closeModal('adminAuthModal')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-xs font-semibold rounded-md">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-brand-red hover:bg-brand-darkRed text-xs font-semibold rounded-md">Login as Admin</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- DUAL-AUDIO VIDEO PLAYER MODAL -->
     <div id="videoModal" class="fixed inset-0 z-50 hidden bg-black/95 flex flex-col justify-center items-center p-2 sm:p-6 backdrop-blur-md">
@@ -284,7 +318,7 @@
         const defaultMediaData = [
             {
                 id: '1',
-                title: 'Solo Leveling',
+                title: 'Solo Leveling (Season 2)',
                 category: 'anime',
                 poster: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=600&auto=format&fit=crop',
                 hindiUrl: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
@@ -318,12 +352,67 @@
         let hlsPlayer = null;
         let currentActiveItem = null;
         let currentLanguage = 'hindi';
+        let isAdminLoggedIn = false;
+        const ADMIN_PIN = "1234"; // Default Password for Admin
 
         window.onload = function() {
             loadMediaFromStorage();
             renderAllGrids();
             setupNavbarScroll();
+            checkAdminSession();
         };
+
+        function checkAdminSession() {
+            const adminSession = sessionStorage.getItem('streamverse_admin');
+            if (adminSession === 'true') {
+                setAdminUI(true);
+            } else {
+                setAdminUI(false);
+            }
+        }
+
+        function promptAdminLogin() {
+            if (isAdminLoggedIn) {
+                if (confirm("Are you sure you want to log out of Admin mode?")) {
+                    sessionStorage.removeItem('streamverse_admin');
+                    setAdminUI(false);
+                }
+            } else {
+                openModal('adminAuthModal');
+            }
+        }
+
+        function verifyAdminPin(e) {
+            e.preventDefault();
+            const inputPin = document.getElementById('adminPinInput').value;
+            const errorMsg = document.getElementById('pinErrorMsg');
+            
+            if (inputPin === ADMIN_PIN) {
+                sessionStorage.setItem('streamverse_admin', 'true');
+                setAdminUI(true);
+                closeModal('adminAuthModal');
+                document.getElementById('adminPinInput').value = '';
+                errorMsg.classList.add('hidden');
+            } else {
+                errorMsg.classList.remove('hidden');
+            }
+        }
+
+        function setAdminUI(isLoggedIn) {
+            isAdminLoggedIn = isLoggedIn;
+            const adminControls = document.getElementById('adminControls');
+            const adminLoginBtn = document.getElementById('adminLoginBtn');
+
+            if (isLoggedIn) {
+                adminControls.classList.remove('hidden');
+                adminLoginBtn.innerHTML = `<i class="fa-solid fa-unlock text-green-400"></i> Admin Active (Logout)`;
+                adminLoginBtn.classList.add('text-green-400');
+            } else {
+                adminControls.classList.add('hidden');
+                adminLoginBtn.innerHTML = `<i class="fa-solid fa-lock text-[10px]"></i> Admin Portal`;
+                adminLoginBtn.classList.remove('text-green-400');
+            }
+        }
 
         function loadMediaFromStorage() {
             const saved = localStorage.getItem('streamverse_media');
